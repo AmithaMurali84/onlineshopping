@@ -4,8 +4,12 @@ import process from 'process';
 import dotenv from 'dotenv';
 import productRouter from './routers/productRouter.js';
 import userRouter from './routers/userRouter.js';
+import orderRouter from './routers/orderRouter.js';
 dotenv.config();
+
 const app=express();
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 mongoose.connect(process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/mycart', {
  useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -15,9 +19,16 @@ mongoose.connect(process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/mycart', 
 
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
+app.use('/api/orders', orderRouter);
+app.get('/api/config/paypal', (req, res) => {
+  res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
+});
+app.get('/api/config/paypal', (req, res) => {
+  res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
+});
 app.get('/',(req, res) => 
 {
-    res.send('Server is ready to..');
+    res.send('Server is ready');
 });
 
 app.use((err, req, res, next) => {
